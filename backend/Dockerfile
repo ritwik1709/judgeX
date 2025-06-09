@@ -1,4 +1,7 @@
-FROM node:18
+FROM docker:20.10.16
+
+# Install Node.js and npm
+RUN apk add --update nodejs npm
 
 WORKDIR /app
 
