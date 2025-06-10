@@ -9,10 +9,8 @@ console.log('API Base URL:', baseURL); // Debug log
 const api = axios.create({
   baseURL: baseURL,
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  },
-  withCredentials: true // Enable sending cookies
+    'Content-Type': 'application/json'
+  }
 });
 
 // Add a request interceptor to add the auth token
