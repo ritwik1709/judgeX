@@ -15,7 +15,8 @@ const Submissions = () => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await api.get('/api/submissions/my-submissions');
+        setLoading(true);
+        const response = await api.get('/submissions/my-submissions');
         setSubmissions(response.data);
       } catch (error) {
         console.error('Error fetching submissions:', error);

@@ -16,7 +16,7 @@ const OnlineCompiler = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await api.post('/api/compiler/compile', {
+      const response = await api.post('/compiler/compile', {
         code,
         input,
         language
