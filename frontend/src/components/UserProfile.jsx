@@ -14,22 +14,34 @@ const UserProfile = () => {
     }
   });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await api.get('/api/users/stats');
         console.log('Received user stats:', response.data);
         setStats(response.data);
-        setError(null);
       } catch (error) {
         console.error('Error fetching user stats:', error);
         setError('Failed to load profile data. Please try again.');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStats();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 dark:border-blue-400"></div>
+      </div>
+    );
+  }
 
   if (error) {
     return (

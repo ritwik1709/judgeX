@@ -14,24 +14,46 @@ const AdminProfile = () => {
     }
   });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await api.get('/api/admin/stats');
         console.log('Received admin stats:', response.data);
         setStats(response.data);
-        setError(null);
       } catch (error) {
         console.error('Error fetching admin stats:', error);
         setError('Failed to load profile data. Please try again.');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStats();
   }, []);
 
-  console.log('Current stats state:', stats);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 dark:border-blue-400"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-600 dark:text-red-400">
+            {error}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

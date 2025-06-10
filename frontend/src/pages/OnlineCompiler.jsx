@@ -9,26 +9,26 @@ const OnlineCompiler = () => {
   const [output, setOutput] = useState('');
   const [language, setLanguage] = useState('cpp');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { darkMode } = useTheme();
 
-  const handleRun = async () => {
-    if (!code.trim()) {
-      setOutput('Error: Please enter some code to run');
-      return;
-    }
-
-    setIsLoading(true);
+  const handleCompile = async () => {
     try {
-      const response = await api.post('/compile', {
+      setIsLoading(true);
+      setError(null);
+      const response = await api.post('/api/compiler/compile', {
         code,
         input,
         language
       });
       setOutput(response.data.output);
     } catch (error) {
-      setOutput(error.response?.data?.error || 'An error occurred');
+      console.error('Compilation error:', error);
+      setError(error.response?.data?.error || 'Compilation failed');
+      setOutput('');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const getMonacoLanguage = () => {
@@ -99,7 +99,7 @@ const OnlineCompiler = () => {
         {/* Run Button */}
         <div className="mt-6 text-center">
           <button
-            onClick={handleRun}
+            onClick={handleCompile}
             disabled={isLoading}
             className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white px-6 py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 transition duration-200 disabled:from-blue-400 disabled:to-blue-500 shadow-md"
           >
