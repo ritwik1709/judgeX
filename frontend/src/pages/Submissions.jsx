@@ -15,7 +15,7 @@ const Submissions = () => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/submissions/my-submissions', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/submissions/my-submissions`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -23,6 +23,10 @@ const Submissions = () => {
         setSubmissions(response.data);
       } catch (error) {
         console.error('Error fetching submissions:', error);
+        setToast({
+          message: 'Failed to load submissions. Please try again.',
+          type: 'error'
+        });
       } finally {
         setLoading(false);
       }
