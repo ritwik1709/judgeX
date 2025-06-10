@@ -14,6 +14,10 @@ router.post('/compile', async (req, res) => {
       return res.status(400).json({ error: 'No code provided' });
     }
 
+    if (!language || !['cpp', 'python', 'java'].includes(language)) {
+      return res.status(400).json({ error: 'Invalid or unsupported language' });
+    }
+
     let output;
     try {
       switch (language) {
@@ -31,7 +35,11 @@ router.post('/compile', async (req, res) => {
       }
       res.json({ output });
     } catch (error) {
-      res.status(400).json({ error: error.error || 'Compilation failed' });
+      console.error('Execution error:', error);
+      res.status(400).json({ 
+        error: error.error || 'Compilation failed',
+        details: error.message
+      });
     }
   } catch (error) {
     console.error('Compilation error:', error);

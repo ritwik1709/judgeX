@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import api from '../utils/axiosConfig';
+import { useParams, useNavigate } from 'react-router-dom';
+import api from '../utils/api';
 import CodeEditor from '../components/CodeEditor';
 import { useTheme } from '../context/ThemeContext';
 

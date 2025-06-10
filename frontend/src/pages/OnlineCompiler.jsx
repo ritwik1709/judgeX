@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../utils/axiosConfig';
+import api from '../utils/api';
 import Editor from '@monaco-editor/react';
 import { useTheme } from '../context/ThemeContext';
 

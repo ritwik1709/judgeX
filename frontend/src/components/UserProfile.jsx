@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from '../utils/axiosConfig';
+import api from '../utils/api';
 
 const UserProfile = () => {
   const { user } = useAuth();
@@ -13,20 +13,35 @@ const UserProfile = () => {
       Hard: { total: 0, solved: 0, submissions: 0 }
     }
   });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('/user/stats');
+        const response = await api.get('/api/users/stats');
         console.log('Received user stats:', response.data);
         setStats(response.data);
+        setError(null);
       } catch (error) {
         console.error('Error fetching user stats:', error);
+        setError('Failed to load profile data. Please try again.');
       }
     };
 
     fetchStats();
   }, []);
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-600 dark:text-red-400">
+            {error}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   console.log('Current stats state:', stats);
 

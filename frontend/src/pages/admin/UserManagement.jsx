@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../../utils/axiosConfig';
+import api from '../../utils/api';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);

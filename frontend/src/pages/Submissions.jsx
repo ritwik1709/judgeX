@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import Toast from '../components/Toast';
+import api from '../utils/api';
 
 const Submissions = () => {
   const [submissions, setSubmissions] = useState([]);
@@ -15,11 +15,7 @@ const Submissions = () => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/submissions/my-submissions`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+        const response = await api.get('/api/submissions/my-submissions');
         setSubmissions(response.data);
       } catch (error) {
         console.error('Error fetching submissions:', error);

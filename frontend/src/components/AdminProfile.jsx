@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from '../utils/axiosConfig';
+import api from '../utils/api';
 
 const AdminProfile = () => {
   const { user } = useAuth();
@@ -13,15 +13,18 @@ const AdminProfile = () => {
       Hard: { total: 0, solved: 0, submissions: 0 }
     }
   });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('/admin/stats');
+        const response = await api.get('/api/admin/stats');
         console.log('Received admin stats:', response.data);
         setStats(response.data);
+        setError(null);
       } catch (error) {
         console.error('Error fetching admin stats:', error);
+        setError('Failed to load profile data. Please try again.');
       }
     };
 
