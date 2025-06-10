@@ -2,26 +2,12 @@ import Submission from '../models/Submission.js';
 import Problem from '../models/Problem.js';
 import { judge } from '../utils/judge.js';
 import { generateAIFeedback } from '../utils/aiFeedback.js';
-import { executeCpp, setStorageService as setCppStorageService } from '../utils/executeCpp.js';
-import { executePython, setStorageService as setPythonStorageService } from '../utils/executePython.js';
-import { executeJava, setStorageService as setJavaStorageService } from '../utils/executeJava.js';
 
 // Submit Code (Run or Submit)
 export const submitCode = async (req, res) => {
   try {
     const { problemId, language, code, mode } = req.body;
     const userId = req.user.id;
-
-    // Initialize storage service for execution utilities
-    const storageService = req.app.locals.storageService;
-    if (!storageService) {
-      return res.status(500).json({ message: 'Storage service not initialized' });
-    }
-    
-    // Set storage service for all execution utilities
-    setCppStorageService(storageService);
-    setPythonStorageService(storageService);
-    setJavaStorageService(storageService);
 
     const problem = await Problem.findById(problemId);
     if (!problem) return res.status(404).json({ message: 'Problem not found' });
