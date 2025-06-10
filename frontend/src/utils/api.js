@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get the base URL from environment variable or use default
-const baseURL = import.meta.env.VITE_API_URL || 'https://judgex.onrender.com';
+const baseURL = (import.meta.env.VITE_API_URL || 'https://judgex.onrender.com') + '/api';
 
 console.log('API Base URL:', baseURL); // Debug log
 
