@@ -9,5 +9,6 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3000
-    dockerCommand: npm start 
+        value: 5000
+    dockerCommand: sh -c "dockerd & sleep 10 && npm start"
+    privileged: true 

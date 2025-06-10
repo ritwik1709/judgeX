@@ -1,6 +1,7 @@
 import express from 'express';
 import { exec } from 'child_process';
-import fs from 'fs';
+import { promisify } from 'util';
+import fs from 'fs/promises';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
@@ -8,6 +9,7 @@ import { executeCpp, setStorageService as setCppStorageService } from '../utils/
 import { executePython, setStorageService as setPythonStorageService } from '../utils/executePython.js';
 import { executeJava, setStorageService as setJavaStorageService } from '../utils/executeJava.js';
 
+const execAsync = promisify(exec);
 const router = express.Router();
 
 // Get the directory name in ES modules
@@ -16,8 +18,8 @@ const __dirname = path.dirname(__filename);
 
 // Create temp directory if it doesn't exist
 const tempDir = path.join(__dirname, '../temp');
-if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir);
+if (!fs.promises.access(tempDir).then(() => true, () => fs.promises.mkdir(tempDir, { recursive: true }))) {
+  throw new Error('Failed to create temp directory');
 }
 
 // Maximum code length (in characters)
@@ -42,123 +44,72 @@ router.use((req, res, next) => {
   next();
 });
 
-router.post('/compile', async (req, res) => {
-  const { code, input, language } = req.body;
-
-  // Input validation
-  if (!code || typeof code !== 'string') {
-    return res.status(400).json({ error: 'Code is required and must be a string' });
-  }
-
-  if (code.length > MAX_CODE_LENGTH) {
-    return res.status(400).json({ error: `Code length exceeds maximum limit of ${MAX_CODE_LENGTH} characters` });
-  }
-
-  if (input && input.length > MAX_INPUT_LENGTH) {
-    return res.status(400).json({ error: `Input length exceeds maximum limit of ${MAX_INPUT_LENGTH} characters` });
-  }
-
-  if (!['cpp', 'python', 'java'].includes(language)) {
-    return res.status(400).json({ error: 'Invalid programming language. Supported languages: cpp, python, java' });
-  }
-
-  const fileId = uuidv4();
-  
+// Helper function to check if Docker is running
+const checkDocker = async () => {
   try {
-    let fileName, compileCommand, runCommand;
-    
-    switch (language) {
-      case 'cpp':
-        fileName = `${fileId}.cpp`;
-        compileCommand = `g++ ${path.join(tempDir, fileName)} -o ${path.join(tempDir, fileId)}`;
-        runCommand = `${path.join(tempDir, fileId)}`;
-        break;
-      case 'python':
-        fileName = `${fileId}.py`;
-        compileCommand = null;
-        runCommand = `python ${path.join(tempDir, fileName)}`;
-        break;
-      case 'java':
-        fileName = `${fileId}.java`;
-        compileCommand = `javac ${path.join(tempDir, fileName)}`;
-        runCommand = `java -cp ${tempDir} ${fileId}`;
-        break;
+    await execAsync('docker info');
+    return true;
+  } catch (error) {
+    console.error('Docker check failed:', error);
+    return false;
+  }
+};
+
+router.post('/compile', async (req, res) => {
+  try {
+    // Check if Docker is running
+    const isDockerRunning = await checkDocker();
+    if (!isDockerRunning) {
+      console.error('Docker is not running');
+      return res.status(500).json({ error: 'Docker service is not available' });
     }
+
+    const { code, input, language } = req.body;
+    console.log('Received compilation request:', { language, inputLength: input?.length });
+
+    if (!code) {
+      return res.status(400).json({ error: 'No code provided' });
+    }
+
+    // Create a unique directory for this compilation
+    const timestamp = Date.now();
+    const dirPath = path.join(process.cwd(), 'temp', `compile_${timestamp}`);
+    await fs.promises.mkdir(dirPath, { recursive: true });
 
     // Write code to file
-    fs.writeFileSync(path.join(tempDir, fileName), code);
+    const fileName = `code.${language === 'python' ? 'py' : language === 'java' ? 'java' : 'cpp'}`;
+    const filePath = path.join(dirPath, fileName);
+    await fs.promises.writeFile(filePath, code);
 
-    // Compile if needed
-    if (compileCommand) {
-      try {
-        await new Promise((resolve, reject) => {
-          exec(compileCommand, (error, stdout, stderr) => {
-            if (error) {
-              reject(new Error(`Compilation Error: ${stderr || error.message}`));
-            } else {
-              resolve();
-            }
-          });
-        });
-      } catch (error) {
-        throw new Error(`Compilation failed: ${error.message}`);
-      }
+    // Write input to file
+    const inputPath = path.join(dirPath, 'input.txt');
+    await fs.promises.writeFile(inputPath, input || '');
+
+    console.log('Files created:', { filePath, inputPath });
+
+    // Run the code in Docker
+    const dockerCommand = `docker run --rm -v ${dirPath}:/code -w /code ${language === 'python' ? 'python:3.9' : language === 'java' ? 'openjdk:11' : 'gcc:latest'} ${language === 'python' ? 'python' : language === 'java' ? 'java' : 'g++'} ${fileName} ${language === 'java' ? '&& java Main' : ''} < input.txt`;
+    
+    console.log('Executing Docker command:', dockerCommand);
+    
+    const { stdout, stderr } = await execAsync(dockerCommand);
+    console.log('Docker execution result:', { stdout, stderr });
+
+    // Clean up
+    await fs.promises.rm(dirPath, { recursive: true, force: true });
+
+    if (stderr) {
+      return res.status(400).json({ error: stderr });
     }
 
-    // Run the program with timeout
-    const output = await new Promise((resolve, reject) => {
-      const process = exec(runCommand, {
-        timeout: MAX_EXECUTION_TIME
-      }, (error, stdout, stderr) => {
-        if (error) {
-          if (error.killed) {
-            reject(new Error('Execution timed out'));
-          } else {
-            reject(new Error(`Runtime Error: ${stderr || error.message}`));
-          }
-        } else {
-          resolve(stdout);
-        }
-      });
-
-      // Write input to stdin if provided
-      if (input) {
-        process.stdin.write(input);
-        process.stdin.end();
-      }
-    });
-
-    // Cleanup
-    const filesToDelete = [
-      path.join(tempDir, fileName),
-      path.join(tempDir, fileId),
-      path.join(tempDir, `${fileId}.class`)
-    ];
-
-    filesToDelete.forEach(file => {
-      if (fs.existsSync(file)) {
-        fs.unlinkSync(file);
-      }
-    });
-
-    res.json({ output });
+    res.json({ output: stdout });
   } catch (error) {
-    // Cleanup on error
-    const filesToDelete = [
-      path.join(tempDir, `${fileId}.cpp`),
-      path.join(tempDir, `${fileId}.py`),
-      path.join(tempDir, `${fileId}.java`),
-      path.join(tempDir, fileId),
-      path.join(tempDir, `${fileId}.class`)
-    ];
-
-    filesToDelete.forEach(file => {
-      if (fs.existsSync(file)) {
-        fs.unlinkSync(file);
-      }
+    console.error('Compilation error:', error);
+    res.status(500).json({ 
+      error: 'Compilation failed',
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
-
-    res.status(500).json({ error: error.message });
   }
 });
 

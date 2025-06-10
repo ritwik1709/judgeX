@@ -1,4 +1,4 @@
-FROM docker:20.10.16
+FROM docker:20.10.16-dind
 
 # Install Node.js and npm
 RUN apk add --update nodejs npm
@@ -15,7 +15,7 @@ RUN npm install
 COPY . .
 
 # Expose the port your app runs on
-EXPOSE 3000
+EXPOSE 5000
 
-# Command to run the application
-CMD ["npm", "start"] 
+# Start Docker daemon and then the application
+CMD ["sh", "-c", "dockerd & sleep 10 && npm start"] 
