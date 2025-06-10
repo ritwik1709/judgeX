@@ -21,7 +21,7 @@ const AdminProfile = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get('/admin/stats');
+        const response = await api.get('/api/admin/stats');
         console.log('Received admin stats:', response.data);
         setStats(response.data);
       } catch (error) {
