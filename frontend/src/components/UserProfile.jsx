@@ -21,7 +21,7 @@ const UserProfile = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get('/api/users/stats');
+        const response = await api.get('/users/stats');
         console.log('Received user stats:', response.data);
         setStats(response.data);
       } catch (error) {

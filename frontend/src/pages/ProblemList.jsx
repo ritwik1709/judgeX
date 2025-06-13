@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../utils/axiosConfig';
+import api from '../utils/api';
 import ProblemCard from '../components/ProblemCard';
 
 const ProblemList = () => {
@@ -10,6 +10,7 @@ const ProblemList = () => {
     const fetchProblems = async () => {
       try {
         const response = await api.get('/problems');
+        console.log('Problems response:', response.data); // Debug log
         setProblems(response.data);
       } catch (error) {
         console.error('Error fetching problems:', error);

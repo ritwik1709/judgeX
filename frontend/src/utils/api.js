@@ -21,7 +21,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     // Debug log for requests
-    console.log('Making API request to:', config.url);
+    console.log('Making API request to:', config.url, 'with headers:', config.headers);
     return config;
   },
   (error) => {
@@ -34,12 +34,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // Debug log for successful responses
-    console.log('API response:', response.config.url, response.status);
+    console.log('API response:', response.config.url, response.status, response.data);
     return response;
   },
   (error) => {
     // Debug log for errors
-    console.error('API error:', error.config?.url, error.response?.status, error.response?.data);
+    console.error('API error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
     
     if (error.response?.status === 401) {
       // Handle unauthorized access
