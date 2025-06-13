@@ -2,7 +2,7 @@
 
 A full-stack online judge platform that allows users to solve programming problems, submit solutions, and get instant feedback. The platform includes features for both users and administrators.
 
-## Features
+## 🌟Features
 
 ### User Features
 - User authentication (login/register)
@@ -19,7 +19,7 @@ A full-stack online judge platform that allows users to solve programming proble
 - View admin statistics
 - Responsive admin dashboard
 
-## Tech Stack
+## 👨‍💻Tech Stack
 
 ### Frontend
 - React.js
@@ -36,13 +36,13 @@ A full-stack online judge platform that allows users to solve programming proble
 - JWT for authentication
 - Docker for containerization
 
-## Prerequisites
+## 🚀Prerequisites
 
 - Node.js (v14 or higher)
 - MongoDB
 - Docker (optional)
 
-## Installation
+## ⚙️Installation
 
 1. Clone the repository:
 ```bash
@@ -83,56 +83,7 @@ npm run dev
 npm run dev
 ```
 
-## Deployment
-
-The application is deployed on:
-- Frontend: Vercel
-- Backend: Render
-
-## Project Structure
-
-```
-onlineJudge/
-├── oj-frontend/          # React frontend
-│   ├── src/
-│   │   ├── components/   # Reusable components
-│   │   ├── pages/       # Page components
-│   │   ├── context/     # Context providers
-│   │   └── utils/       # Utility functions
-│   └── public/          # Static files
-│
-└── oj-backend/          # Node.js backend
-    ├── controllers/     # Route controllers
-    ├── models/         # Mongoose models
-    ├── routes/         # API routes
-    ├── middleware/     # Custom middleware
-    └── utils/          # Utility functions
-```
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
-
-### Problems
-- `GET /api/problems` - Get all problems
-- `GET /api/problems/:id` - Get problem by ID
-- `POST /api/problems` - Create new problem (admin only)
-- `PUT /api/problems/:id` - Update problem (admin only)
-- `DELETE /api/problems/:id` - Delete problem (admin only)
-
-### Submissions
-- `POST /api/submissions/submit` - Submit solution
-- `GET /api/submissions/my-submissions` - Get user's submissions
-
-### Admin
-- `GET /api/admin/users` - Get all users (admin only)
-- `GET /api/admin/stats` - Get admin statistics
-- `DELETE /api/admin/users/:id` - Delete user (admin only)
-- `PATCH /api/admin/users/:id` - Update user role (admin only)
-
-## Contributing
+## 🤝Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -141,14 +92,14 @@ onlineJudge/
 5. Open a Pull Request
 
 
-## Author
+## 🧑‍💼Author
 
 Ritwik Sudhakar Tat
 
-## License
+## 📄License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## 🙏Acknowledgments
 
 - Inspired by Other Coding Platforms.
