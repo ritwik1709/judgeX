@@ -2,7 +2,9 @@
 
 A full-stack online judge platform that allows users to solve programming problems, submit solutions, and get instant feedback. The platform includes features for both users and administrators.
 
-See Video Tutorial -> https://www.loom.com/share/73752714d3b84b73a77b7e0688bce728?sid=789263f0-0af5-4dec-af28-4e530829c711
+
+## 🎥 Demo Video
+Watch the demo [here](https://www.loom.com/share/73752714d3b84b73a77b7e0688bce728?sid=3ab55337-0719-40b6-ac90-5bb696d1f341).
 
 ## 🌟Features
 
