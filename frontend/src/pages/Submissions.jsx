@@ -100,20 +100,20 @@ const Submissions = () => {
             key={submission._id} 
             className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
           >
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
               <Link 
                 to={`/problems/${submission.problemId._id}`}
                 className="text-xl font-semibold text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
               >
                 {submission.problemId.title}
               </Link>
-              <span className={`px-4 py-1.5 rounded-full text-sm font-medium ${getVerdictStyle(submission.verdict)}`}>
+              <span className={`mt-2 sm:mt-0 px-4 py-1.5 rounded-full text-sm font-medium ${getVerdictStyle(submission.verdict)}`}>
                 {submission.verdict}
               </span>
             </div>
             
-            <div className="mt-4 flex items-center justify-between text-sm">
-              <div className="space-x-4">
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm">
+              <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
                 <span className="text-gray-600 dark:text-gray-400">
                   Language: <span className="capitalize font-medium text-gray-800 dark:text-gray-200">{getLanguageIcon(submission.language)}</span>
                 </span>
@@ -123,7 +123,7 @@ const Submissions = () => {
               </div>
               <button
                 onClick={() => handleViewCode(submission)}
-                className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors duration-200 border border-blue-200 dark:border-blue-800"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors duration-200 border border-blue-200 dark:border-blue-800"
               >
                 <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -140,14 +140,14 @@ const Submissions = () => {
       {showCodeModal && selectedSubmission && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                 {selectedSubmission.problemId.title} - {getLanguageIcon(selectedSubmission.language)}
               </h3>
-              <div className="flex space-x-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <button
                   onClick={handleCopyCode}
-                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 rounded-md hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors duration-200 border border-green-200 dark:border-green-800"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 rounded-md hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors duration-200 border border-green-200 dark:border-green-800"
                 >
                   <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
@@ -156,7 +156,7 @@ const Submissions = () => {
                 </button>
                 <button
                   onClick={() => setShowCodeModal(false)}
-                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/30 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900/50 transition-colors duration-200 border border-gray-200 dark:border-gray-800"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/30 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900/50 transition-colors duration-200 border border-gray-200 dark:border-gray-800"
                 >
                   <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -166,7 +166,7 @@ const Submissions = () => {
               </div>
             </div>
             <div className="p-4 overflow-auto flex-grow">
-              <pre className={`p-4 rounded-lg ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-800'} font-mono text-sm whitespace-pre-wrap`}>
+              <pre className={`p-4 rounded-lg ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-800'} font-mono text-sm whitespace-pre-wrap break-words`}>
                 {selectedSubmission.code}
               </pre>
             </div>

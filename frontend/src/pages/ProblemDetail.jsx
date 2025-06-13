@@ -185,25 +185,25 @@ const ProblemDetail = () => {
           disabled={isProcessing}
         />
 
-        <div className="mt-4 flex gap-4">
+        <div className="mt-4 flex flex-col sm:flex-row gap-4">
           <button
             onClick={handleRun}
             disabled={isProcessing}
-            className="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white px-6 py-2 rounded disabled:opacity-50"
+            className="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white px-6 py-2 rounded disabled:opacity-50"
           >
             {isProcessing ? 'Running...' : 'Run Code'}
           </button>
           <button
             onClick={handleSubmit}
             disabled={isProcessing}
-            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-2 rounded disabled:opacity-50"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-2 rounded disabled:opacity-50"
           >
             {isProcessing ? 'Submitting...' : 'Submit Solution'}
           </button>
           {hasWrongSubmission && !showAIHint && (
             <button
               onClick={handleShowAIHint}
-              className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white px-6 py-2 rounded"
+              className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white px-6 py-2 rounded"
             >
               Get AI Hint
             </button>
