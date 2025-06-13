@@ -46,7 +46,7 @@ A full-stack online judge platform that allows users to solve programming proble
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/ritwik1709/judgeX
 cd onlineJudge
 ```
 
