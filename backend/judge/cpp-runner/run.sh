@@ -13,19 +13,19 @@ echo "=== Source Code ==="
 cat code.cpp
 echo "==================="
 
-# Compile the code with warnings
-g++ -Wall code.cpp -o code.out 2> compile_error.txt
+# Compile with optimizations
+g++ -O2 -std=c++17 -Wall -Wextra -Werror code.cpp -o code.out 2> compile_error.txt
 
 # If compilation fails, return error
 if [ $? -ne 0 ]; then
-  echo "=== Compilation Error ==="
-  cat compile_error.txt
-  echo "======================="
-  exit 1
+    echo "=== Compilation Error ==="
+    cat compile_error.txt
+    echo "======================="
+    exit 1
 fi
 
 # Run with input and capture output
-timeout 2s ./code.out < input.txt > output.txt 2> error.txt
+timeout 1s ./code.out < input.txt > output.txt 2> error.txt
 EXIT_CODE=$?
 
 # Check for timeout

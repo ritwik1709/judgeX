@@ -1,11 +1,12 @@
-FROM node:18
+FROM node:18-slim
 
-# Install required compilers and tools
-RUN apt-get update && apt-get install -y \
+# Install required compilers and tools with minimal dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     python3 \
     default-jdk \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 WORKDIR /app
 
@@ -13,13 +14,17 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --production
 
 # Copy the rest of the application
 COPY . .
 
-# Create temp directory
-RUN mkdir -p /app/temp
+# Create necessary directories
+RUN mkdir -p /app/temp /app/cache
+
+# Set environment variables for better performance
+ENV NODE_ENV=production
+ENV CXXFLAGS="-O2 -std=c++17"
 
 # Expose the port your app runs on
 EXPOSE 5000
