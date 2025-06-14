@@ -16,6 +16,7 @@ const OnlineCompiler = () => {
     try {
       setIsLoading(true);
       setError(null);
+      setOutput('');
       const response = await api.post('/compiler/compile', {
         code,
         input,
@@ -24,8 +25,10 @@ const OnlineCompiler = () => {
       setOutput(response.data.output);
     } catch (error) {
       console.error('Compilation error:', error);
-      setError(error.response?.data?.error || 'Compilation failed');
-      setOutput('');
+      const errorMessage = error.response?.data?.error || 'Compilation failed';
+      const errorDetails = error.response?.data?.details || '';
+      setError(errorMessage);
+      setOutput(errorDetails || errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -120,10 +123,12 @@ const OnlineCompiler = () => {
         {/* Output */}
         <div className="mt-6 bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
           <h2 className="text-base md:text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
-            Output
+            {error ? 'Error' : 'Output'}
           </h2>
-          <pre className="w-full min-h-[100px] p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg font-mono text-sm md:text-base text-gray-800 dark:text-white whitespace-pre-wrap overflow-x-auto">
-            {output || 'Output will appear here...'}
+          <pre className={`w-full min-h-[100px] p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg font-mono text-sm md:text-base whitespace-pre-wrap overflow-x-auto ${
+            error ? 'text-red-600 dark:text-red-400' : 'text-gray-800 dark:text-white'
+          }`}>
+            {output || (error ? error : 'Output will appear here...')}
           </pre>
         </div>
       </div>
