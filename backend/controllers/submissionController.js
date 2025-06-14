@@ -18,8 +18,6 @@ export const submitCode = async (req, res) => {
       return res.status(400).json({ message: 'No test cases available' });
     }
 
-    console.log('Test Cases:', testCases); // Debug log
-
     // Judge the submission
     const result = await judge(code, language, testCases);
     
@@ -51,13 +49,13 @@ export const submitCode = async (req, res) => {
         submittedAt: new Date()
       });
 
-      console.log('Saving submission:', submission);
       await submission.save();
     }
 
     res.status(200).json({
       message: `Code ${mode === 'run' ? 'executed' : 'submitted'} successfully`,
-      ...result,
+      verdict: result.verdict,
+      failedTestCase: result.failedTestCase,
       aiFeedback
     });
   } catch (err) {

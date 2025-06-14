@@ -11,12 +11,8 @@ export const authMiddleware = (req, res, next) => {
   try {
     // Extract the token from the Authorization header
     const authHeader = req.headers.authorization;
-    console.log('Auth Middleware - Headers:', {
-      authorization: authHeader ? `${authHeader.substring(0, 20)}...` : 'none'
-    });
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('Auth Middleware - No valid Authorization header');
       return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
 
@@ -24,10 +20,6 @@ export const authMiddleware = (req, res, next) => {
     
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
-      console.log('Auth Middleware - Decoded token:', {
-        userId: decoded.userId,
-        role: decoded.role
-      });
 
       // Set user info in request
       req.user = {
@@ -37,11 +29,11 @@ export const authMiddleware = (req, res, next) => {
 
       next();
     } catch (jwtError) {
-      console.error('Auth Middleware - JWT verification failed:', jwtError.message);
+      console.error('JWT verification failed:', jwtError.message);
       return res.status(401).json({ message: 'Invalid token' });
     }
   } catch (error) {
-    console.error('Auth Middleware - Unexpected error:', error);
+    console.error('Auth middleware error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

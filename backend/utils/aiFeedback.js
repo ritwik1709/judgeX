@@ -145,11 +145,7 @@ Keep the response focused on the specific problem requirements and avoid generic
         // If the feedback is too long, truncate it at a higher limit
         return formattedFeedback.length > 2000 ? formattedFeedback.substring(0, 1997) + '...' : formattedFeedback;
     } catch (error) {
-        console.error('AI Feedback Error Details:', {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
-        });
+        console.error('AI Feedback Error:', error.message);
         
         // Provide more specific fallback messages based on the verdict
         switch (verdict) {
